@@ -19,7 +19,6 @@ namespace FlexASIOGUI
         private bool InitDone = false;
         private string TOMLPath;
         private FlexGUIConfig flexGUIConfig;
-        private Encoding legacyEncoding;
         private readonly string flexasioGuiVersion = "0.35";
         private readonly string flexasioVersion = "1.9";
         private readonly string tomlName = "FlexASIO.toml";
@@ -40,10 +39,6 @@ namespace FlexASIOGUI
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            // get the value of the "Language for non-Unicode programs" setting (1252 for English)
-            // note: in Win11 this could be UTF-8 already, since it's natively supported
-            legacyEncoding = Encoding.GetEncoding((int)GetACP());
 
             System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
             CultureInfo.DefaultThreadCurrentCulture = customCulture;
@@ -123,8 +118,8 @@ namespace FlexASIOGUI
 
         private string DescrambleUTF8(string s)
         {
-            // portaudio incorrectly returns UTF-8 strings as if they were ANSI (CP1252 for most Latin systems, CP1251 for Cyrillic, etc...)
-            // this line fixes the issue by reading the input as CP* and parsing it as UTF-8
+            // now portaudio is use Unicode string, not ANSI string
+            // So we need to convert Unicode to utf-8
             byte[] stringBuffer = Encoding.Unicode.GetBytes(s);
             s = Encoding.UTF8.GetString(stringBuffer);
             return s;
