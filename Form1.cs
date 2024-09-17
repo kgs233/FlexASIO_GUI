@@ -34,7 +34,7 @@ namespace FlexASIOGUI
         public Form1()
         {
             InitializeComponent();
-            
+
             this.Text = $"FlexASIO GUI v{flexasioGuiVersion}";
 
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
@@ -50,7 +50,7 @@ namespace FlexASIOGUI
             CultureInfo.DefaultThreadCurrentUICulture = customCulture;
 
             TOMLPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\\{tomlName}";
-            
+
             tomlModelOptions.ConvertPropertyName = (string name) => name;
             this.LoadFlexASIOConfig(TOMLPath);
 
@@ -125,9 +125,11 @@ namespace FlexASIOGUI
         {
             // portaudio incorrectly returns UTF-8 strings as if they were ANSI (CP1252 for most Latin systems, CP1251 for Cyrillic, etc...)
             // this line fixes the issue by reading the input as CP* and parsing it as UTF-8
-            var bytes = legacyEncoding.GetBytes(s);
-            return Encoding.UTF8.GetString(bytes);
+            byte[] stringBuffer = Encoding.Unicode.GetBytes(s);
+            s = Encoding.UTF8.GetString(stringBuffer);
+            return s;
         }
+
 
         private TreeNode[] GetDevicesForBackend(string Backend, bool Input)
         {
@@ -138,8 +140,8 @@ namespace FlexASIOGUI
                 var deviceInfo = Configuration.GetDeviceInfo(i);
 
                 var apiInfo = Configuration.GetHostApiInfo(deviceInfo.hostApi);
-                
-                if (apiInfo.name != Backend) 
+
+                if (apiInfo.name != Backend)
                     continue;
 
                 if (Input == true)
@@ -162,7 +164,7 @@ namespace FlexASIOGUI
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         private void comboBackend_SelectedIndexChanged(object sender, EventArgs e)
@@ -262,7 +264,7 @@ namespace FlexASIOGUI
             SetStatusMessage($"Configuration written to {saveFileDialog.FileName}");
         }
 
-         private void treeDevicesInput_AfterSelect(object sender, TreeViewEventArgs e)
+        private void treeDevicesInput_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (sender == null) return;
             else
@@ -402,7 +404,7 @@ namespace FlexASIOGUI
             GenerateOutput();
         }
 
- 
+
         private void checkBoxSetInputLatency_CheckedChanged(object sender, EventArgs e)
         {
             var o = sender as CheckBox;
@@ -424,7 +426,8 @@ namespace FlexASIOGUI
             var o = sender as CheckBox;
             if (o == null) return;
             numericLatencyOutput.Enabled = o.Checked;
-            if (o.Checked == false) {
+            if (o.Checked == false)
+            {
                 flexGUIConfig.output.suggestedLatencySeconds = null;
             }
             else
@@ -433,15 +436,16 @@ namespace FlexASIOGUI
             }
             GenerateOutput();
         }
-       
+
 
         private void checkBoxSetBufferSize_CheckedChanged(object sender, EventArgs e)
         {
             var o = sender as CheckBox;
             if (o == null) return;
             numericBufferSize.Enabled = o.Checked;
-            if (o.Checked == false) { 
-                flexGUIConfig.bufferSizeSamples = null; 
+            if (o.Checked == false)
+            {
+                flexGUIConfig.bufferSizeSamples = null;
             }
             else
             {
@@ -504,7 +508,7 @@ namespace FlexASIOGUI
         private void btLoadFrom_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            
+
             openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             openFileDialog.FileName = tomlName;
             openFileDialog.Filter = "FlexASIO Config (*.toml)|*.toml";
@@ -522,7 +526,7 @@ namespace FlexASIOGUI
                     this.LoadFlexASIOConfig(TOMLPath);
                     return;
                 }
-                
+
             }
             SetStatusMessage($"Configuration loaded from {openFileDialog.FileName}");
         }
