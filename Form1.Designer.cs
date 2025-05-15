@@ -391,6 +391,7 @@
             this.configOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.configOutput.Size = new System.Drawing.Size(295, 333);
             this.configOutput.TabIndex = 9;
+            this.configOutput.ReadOnly = true;
             // 
             // label1
             // 

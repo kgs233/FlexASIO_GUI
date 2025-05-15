@@ -60,7 +60,15 @@ namespace FlexASIOGUI
             if (File.Exists(tomlPath))
             {
                 var tomlPathAsText = File.ReadAllText(tomlPath);
-                flexGUIConfig = Toml.ToModel<FlexGUIConfig>(tomlPathAsText, options: tomlModelOptions);
+                try
+                {
+                    flexGUIConfig = Toml.ToModel<FlexGUIConfig>(tomlPathAsText, options: tomlModelOptions);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show($"Error loading config, the config file is reset.");
+                    File.Delete(tomlPath);
+                }
             }
 
             numericBufferSize.Maximum = 8192;
