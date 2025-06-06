@@ -124,16 +124,6 @@ namespace FlexASIOGUI
             return flexGUIConfig;
         }
 
-        private string DescrambleUTF8(string s)
-        {
-            // now portaudio is use Unicode string, not ANSI string
-            // So we need to convert Unicode to utf-8
-            byte[] stringBuffer = Encoding.Unicode.GetBytes(s);
-            s = Encoding.UTF8.GetString(stringBuffer);
-            return s;
-        }
-
-
         private TreeNode[] GetDevicesForBackend(string Backend, bool Input)
         {
             List<TreeNode> treeNodes = new List<TreeNode>();
@@ -151,14 +141,14 @@ namespace FlexASIOGUI
                 {
                     if (deviceInfo.maxInputChannels > 0)
                     {
-                        treeNodes.Add(new TreeNode(DescrambleUTF8(deviceInfo.name)));
+                        treeNodes.Add(new TreeNode(deviceInfo.name));
                     }
                 }
                 else
                 {
                     if (deviceInfo.maxOutputChannels > 0)
                     {
-                        treeNodes.Add(new TreeNode(DescrambleUTF8(deviceInfo.name)));
+                        treeNodes.Add(new TreeNode(deviceInfo.name));
                     }
                 }
             }
@@ -175,7 +165,7 @@ namespace FlexASIOGUI
             var o = sender as ComboBox;
             if (o != null)
             {
-                var selectedBackend = o.SelectedItem as string;
+                var selectedBackend = o.SelectedItem as String;
                 RefreshDevices(selectedBackend);
                 if (selectedBackend == "(None)") selectedBackend = "";
                 flexGUIConfig.backend = selectedBackend;
